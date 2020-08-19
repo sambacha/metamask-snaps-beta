@@ -538,6 +538,7 @@ module.exports = class MetamaskController extends EventEmitter {
     const abTestController = this.abTestController
     const txController = this.txController
     const pluginsController = this.pluginsController
+    const workerController = this.pluginsController.workerController
 
     return {
       // etc
@@ -680,6 +681,7 @@ module.exports = class MetamaskController extends EventEmitter {
       runInlineWorkerPlugin: pluginsController.runInlineWorkerPlugin.bind(pluginsController),
       removeInlineWorkerPlugin: pluginsController.removeInlineWorkerPlugin.bind(pluginsController),
       runStressTestPlugins: pluginsController.runStressTestPlugins.bind(pluginsController),
+      terminateAllWorkers: workerController.terminateAll.bind(workerController),
 
       // prompts
       resolvePrompt: this.promptsController.resolvePrompt.bind(this.promptsController),

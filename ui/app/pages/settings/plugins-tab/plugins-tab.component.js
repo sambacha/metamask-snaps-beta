@@ -11,6 +11,7 @@ export default class PluginsTab extends Component {
     workerCount: PropTypes.number.isRequired,
     removePlugins: PropTypes.func.isRequired,
     runStressTestPlugins: PropTypes.func.isRequired,
+    terminateAllWorkers: PropTypes.func.isRequired,
     showClearPluginsModal: PropTypes.func.isRequired,
   }
 
@@ -68,6 +69,14 @@ export default class PluginsTab extends Component {
             'Runs 10 Stress Test Plugins',
             this.props.runStressTestPlugins,
             false,
+          )
+        }
+        {
+          this.renderActionButton(
+            'Terminate All Workers',
+            'Terminates All Running Workers',
+            this.props.terminateAllWorkers,
+            workerCount === 0,
           )
         }
         {

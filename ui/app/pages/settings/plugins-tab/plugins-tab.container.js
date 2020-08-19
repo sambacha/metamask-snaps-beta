@@ -6,6 +6,7 @@ import {
   showModal,
   removePlugins,
   runStressTestPlugins,
+  terminateAllWorkers,
 } from '../../../store/actions'
 import {
   getAllPlugins,
@@ -32,6 +33,9 @@ const mapDispatchToProps = dispatch => {
     ),
     runStressTestPlugins: () => dispatch(
       runStressTestPlugins(10)
+    ),
+    terminateAllWorkers: () => dispatch(
+      terminateAllWorkers()
     ),
   }
 }

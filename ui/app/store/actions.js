@@ -407,6 +407,7 @@ var actions = {
   runInlineWorkerPlugin,
   removeInlineWorkerPlugin,
   runStressTestPlugins,
+  terminateAllWorkers,
 
   resolvePrompt,
   rejectPrompt,
@@ -3124,6 +3125,12 @@ function removeInlineWorkerPlugin () {
 function runStressTestPlugins (numberToRun) {
   return () => {
     background.runStressTestPlugins(numberToRun)
+  }
+}
+
+function terminateAllWorkers () {
+  return () => {
+    background.terminateAllWorkers()
   }
 }
 

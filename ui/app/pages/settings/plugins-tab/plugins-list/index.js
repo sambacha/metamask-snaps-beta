@@ -139,15 +139,9 @@ export default class PluginsList extends Component {
             { t('pluginsDescription') }
           </span>
         </div>
-        {
-          hasPlugins
-            ? (
-              <div className="settings-page__content-item">
-                {`Active workers: ${this.props.workerCount}`}
-              </div>
-            )
-            : null
-        }
+        <div className="settings-page__content-item">
+          {`Active workers: ${this.props.workerCount}`}
+        </div>
         <div className="settings-page__content-item">
           {
             hasPlugins

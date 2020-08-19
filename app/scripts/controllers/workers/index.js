@@ -107,7 +107,7 @@ module.exports = class WebWorkerController extends SafeEventEmitter {
     console.log(`worker:${workerId} terminated`)
   }
 
-  async startPlugin (workerId, pluginData) {
+  async startPlugin (workerId, pluginData, isBulk = false) {
 
     const _workerId = workerId || this.workers.keys().next()
     if (!_workerId) {
@@ -116,11 +116,15 @@ module.exports = class WebWorkerController extends SafeEventEmitter {
 
     this._mapPluginAndWorker(pluginData.pluginName, workerId)
 
-    return await this.command(_workerId, { command: 'installPlugin', data: pluginData })
+    return await this.command(
+      _workerId,
+      { command: 'installPlugin', data: pluginData },
+      isBulk ? 30000 : 10000
+    )
   }
 
-  async createPluginWorker (metadata, getApiFunction) {
-    return this._initWorker('plugin', metadata, getApiFunction)
+  async createPluginWorker (metadata, getApiFunction, isBulk = false) {
+    return this._initWorker('plugin', metadata, getApiFunction, isBulk)
   }
 
   _mapPluginAndWorker (pluginName, workerId) {
@@ -142,7 +146,7 @@ module.exports = class WebWorkerController extends SafeEventEmitter {
     this.pluginToWorkerMap.delete(pluginName)
   }
 
-  async _initWorker (type, metadata, getApiFunction) {
+  async _initWorker (type, metadata, getApiFunction, isBulk) {
 
     console.log('_initWorker')
 
@@ -156,7 +160,7 @@ module.exports = class WebWorkerController extends SafeEventEmitter {
     const commandEngine = new CommandEngine(workerId, streams.command)
 
     this._setWorker(workerId, { id: workerId, streams, commandEngine, worker })
-    await this.command(workerId, { command: 'ping' })
+    await this.command(workerId, { command: 'ping' }, isBulk ? 30000 : 10000)
     return workerId
   }
 

@@ -239,6 +239,7 @@ module.exports = class PluginsController extends EventEmitter {
     })
     this.workerController.terminateAll()
     this._removeAllPermissionsFor(pluginNames)
+    this._numStressPlugins = 0
   }
 
   /**
@@ -718,27 +719,38 @@ module.exports = class PluginsController extends EventEmitter {
     const sourceCode = getInlinePlugin()
     for (let i = init; i < target; i++) {
       this._startPluginInWorker(
-        `inlinePlugin${i}`,
+        `stressTestPlugin_${i}`,
         [],
         sourceCode,
+        true,
       )
       this._numStressPlugins++
     }
-    console.log(`Started ${numberToRun} plugins in individual workers.`)
+    console.log(`Initializing ${numberToRun} plugins in individual workers.`)
   }
 
-  async _startPluginInWorker (pluginName, approvedPermissions, sourceCode) {
+  /**
+   * Starts a plugin in a Web Worker.
+   * The param isBulk is used to increase the initialization timeout for the workers,
+   * which is significantly longer when many workers are spawned at once.
+   */
+  async _startPluginInWorker (pluginName, approvedPermissions, sourceCode, isBulk = false) {
     const { api, apiKeys } = this._generateApisToProvideForWorker(pluginName, approvedPermissions)
     const workerId = await this.workerController.createPluginWorker(
       { hostname: pluginName },
-      () => api
+      () => api,
+      isBulk,
     )
     this._createPluginHandlerHooks(pluginName, workerId)
-    await this.workerController.startPlugin(workerId, {
-      pluginName,
-      sourceCode,
-      backgroundApiKeys: apiKeys,
-    })
+    await this.workerController.startPlugin(
+      workerId,
+      {
+        pluginName,
+        sourceCode,
+        backgroundApiKeys: apiKeys,
+      },
+      isBulk,
+    )
   }
 
   getRpcMessageHandler (pluginName) {

@@ -8,14 +8,14 @@ module.exports = class CommandEngine {
     this._stream.on('data', this._onMessage.bind(this))
   }
 
-  async command (message, timeout) {
+  async command (message, timeout = 10000) {
     if (typeof message !== 'object') {
       throw new Error('Must send object.')
     }
     return this._send(message, timeout)
   }
 
-  _send (message, timeout = 10000) {
+  _send (message, timeout) {
     const id = this._getNextId()
     message.id = id
     return (new Promise((resolve, reject) => {
